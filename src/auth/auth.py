@@ -1,4 +1,3 @@
-import configparser
 import jwt
 
 from typing import Optional
@@ -9,22 +8,19 @@ from fastapi import Depends, HTTPException
 from starlette import status
 from sqlalchemy.orm import Session
 
+from src.config.settings import settings
 from src.models.db import get_db
 from src.models.models import User
 from src.models.schemas import UserModel
 from src.auth.user import get_user_by_email
 
 
-config = configparser.ConfigParser()
-config.read('config.ini')
-
 class Auth:
-    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+    pwd_context   = CryptContext(schemes=["bcrypt"], deprecated="auto")
     oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
-    SECRET_KEY = config.get('JWT', 'secret_key')
-    ALGORITHM = config.get('JWT', 'algorithm')
-    TOKEN_TTL = 15  # minutes
-
+    SECRET_KEY    = settings.jwt_secret_key
+    ALGORITHM     = settings.jwt_algorithm
+    TOKEN_TTL     = settings.jwt_token_ttl
 
     def verify_password(self, plain_password, hashed_password):
         return self.pwd_context.verify(plain_password, hashed_password)
