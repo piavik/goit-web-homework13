@@ -2,6 +2,7 @@
 from datetime import datetime, timedelta
 from fastapi import Depends
 from sqlalchemy.orm import Session
+from libgravatar import Gravatar
 
 # from src.models.db import get_db
 from src.models.models import User
@@ -12,7 +13,13 @@ async def get_user_by_email(email: str, db: Session) -> User:
     return db.query(User).filter(User.email == email).first()
 
 async def create_user(body: UserModel, db: Session) -> User:
-    new_user = User(**body.dict(), created_at=datetime.now())
+    avatar = None
+    try:
+        g = Gravatar(body.email)
+        avatar = g.get_image()
+    except Exception as e:
+        print(e)
+    new_user = User(**body.dict(), created_at=datetime.now(), avatar=avatar)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
@@ -26,3 +33,9 @@ async def confirmed_email(email: str, db: Session) -> None:
     user = await get_user_by_email(email, db)
     user.confirmed = True
     db.commit()
+
+async def update_avatar(email, url: str, db: Session) -> User:
+    user = await get_user_by_email(email, db)
+    user.avatar = url
+    db.commit()
+    return user
