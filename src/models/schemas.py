@@ -38,6 +38,7 @@ class UserDb(BaseModel):
     username:   str
     email:      str
     created_at: datetime
+    avatar:     str
 
     class Config:
         from_attributes = True

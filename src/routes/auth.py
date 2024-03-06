@@ -1,9 +1,8 @@
 from typing import List
-
+from sqlalchemy.orm import Session
 from fastapi import APIRouter, HTTPException, Depends, status, Security, BackgroundTasks, Request
 from fastapi.security import OAuth2PasswordRequestForm, HTTPBearer, HTTPAuthorizationCredentials
 from fastapi_limiter.depends import RateLimiter
-from sqlalchemy.orm import Session
 
 from src.models.db import get_db
 from src.models.schemas import UserModel, UserResponse, TokenModel, RequestEmail
