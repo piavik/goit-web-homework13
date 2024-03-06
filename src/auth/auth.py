@@ -25,7 +25,6 @@ class Auth:
     TOKEN_TTL     = settings.jwt_token_ttl
     r = redis.Redis(host=settings.redis_host, port=settings.redis_port, db=0)
 
-
     def verify_password(self, plain_password, hashed_password):
         return self.pwd_context.verify(plain_password, hashed_password)
 

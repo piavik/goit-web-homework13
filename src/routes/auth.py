@@ -2,6 +2,7 @@ from typing import List
 
 from fastapi import APIRouter, HTTPException, Depends, status, Security, BackgroundTasks, Request
 from fastapi.security import OAuth2PasswordRequestForm, HTTPBearer, HTTPAuthorizationCredentials
+from fastapi_limiter.depends import RateLimiter
 from sqlalchemy.orm import Session
 
 from src.models.db import get_db
@@ -11,7 +12,7 @@ from src.auth.auth import auth_service
 from src.workers.email import send_email
 
 
-router   = APIRouter(prefix='', tags=["auth"])
+router   = APIRouter(prefix='', tags=["auth"], dependencies=[Depends(RateLimiter(times=2, seconds=5))])
 security = HTTPBearer()
 
 @router.post("/signup", response_model=UserResponse, status_code=status.HTTP_201_CREATED)

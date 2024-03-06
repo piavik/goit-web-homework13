@@ -1,6 +1,7 @@
 from typing import List
 
 from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi_limiter.depends import RateLimiter
 from sqlalchemy.orm import Session
 
 from src.models.db import get_db
@@ -9,7 +10,7 @@ from src.workers import actions
 from src.auth.auth import auth_service
 
 
-router = APIRouter(prefix='/contacts')
+router = APIRouter(prefix='/contacts', dependencies=[Depends(RateLimiter(times=2, seconds=5))])
 
 
 @router.get("/", response_model=List[ContactResponse])

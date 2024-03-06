@@ -19,6 +19,7 @@ psycopg2 = "^2.9.9"
 passlib = { extras = ['bcrypt'], version = "^1.7.4" }
 python-multipart = "^0.0.9"
 redis = "^5.0.2"
+fastapi-limiter = "^0.1.6"
 
 [tool.poetry.group.dev.dependencies]
 Faker = "^24.0.0"
