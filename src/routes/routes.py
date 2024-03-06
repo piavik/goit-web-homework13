@@ -35,11 +35,10 @@ async def find_contacts_with_birthdays( days: int = 7,
 async def find_contacts(first_name: str = "",
                         last_name: str = "",
                         email: str = "",
-                        # birhdays: int = 7,
                         db: Session = Depends(get_db),
                         current_user: UserModel = Depends(auth_service.get_current_user)
                         ):
-    contacts = await actions.find_contacts(db)
+    contacts = await actions.find_contacts(first_name, last_name, email, db)
     if contacts == [] or contacts is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="contacts not found")
     return contacts
