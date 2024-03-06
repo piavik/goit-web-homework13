@@ -1,18 +1,22 @@
 version: '3'
 services:
-  hw-redis:
+  redis:
     image: redis:alpine
+    container-name: hw-redis
     ports:
-      - ${REDIS_PORT}:${REDIS_PORT}
-  hw-postgres:
+      - "${REDIS_PORT}:6379"
+  postgres:
     image: postgres:12
+    container-name: hw-postgres
     environment:
       POSTGRES_DB: ${POSTGRESS_DB_NAME}
       POSTGRES_USER: ${POSTGRESS_USER}
       POSTGRES_PASSWORD: ${POSTGRESS_PASS}
     ports:
-      - ${POSTGRESS_PORT}:${POSTGRESS_PORT}
+      - "${POSTGRESS_PORT}:5432"
     volumes:
-      - /var/lib/docker/volumes/bd25df5094c541e9b013567c8c93e33117689d31e73b09dfe280a69badf8a161/_data:/var/lib/postgresql/data
-
+      - ./.data:/var/lib/postgresql/data
+networks:
+  net1:
+    external: true
     
