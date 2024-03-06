@@ -238,6 +238,24 @@ files = [
 ]
 
 [[package]]
+name = "cloudinary"
+version = "1.39.0"
+description = "Python and Django SDK for Cloudinary"
+optional = false
+python-versions = "*"
+files = [
+    {file = "cloudinary-1.39.0.tar.gz", hash = "sha256:ef577671361c6b3814a8c143246ff2722837c6806fe85e8dfd0e6ad52029782a"},
+]
+
+[package.dependencies]
+certifi = "*"
+six = "*"
+urllib3 = ">=1.26.5"
+
+[package.extras]
+dev = ["tox"]
+
+[[package]]
 name = "dnspython"
 version = "2.6.1"
 description = "DNS toolkit"
@@ -968,4 +986,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "b0a07dd4bc498ed69412c2b25ab396a87beb6f41dcf8458c6ce6eac335a3f619"
+content-hash = "d22435e3c76a63a95542b58c96774863fe461a1f8ef34e37f732d4c65e116bd4"

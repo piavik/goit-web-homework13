@@ -27,6 +27,11 @@ class Settings(BaseSettings):
     redis_host: str
     redis_port: int
 
+    cloudinary_name: str
+    cloudinary_api_key: str
+    cloudinary_api_secret: str
+
+    # Pydantic 2.X format
     model_config = SettingsConfigDict(env_file=".env", extra='allow')
 
     # that is pydantic 1.x format
