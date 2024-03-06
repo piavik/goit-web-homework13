@@ -1,7 +1,6 @@
 import os
 
 from dotenv import load_dotenv
-# from pydantic import SettingsConfigDict
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 load_dotenv()
@@ -12,11 +11,18 @@ class Settings(BaseSettings):
     jwt_secret_key: str
     jwt_algorithm: str
     jwt_token_ttl: int = 15 # minutes
+
     mail_username: str
     mail_password: str
     mail_from: str
     mail_port: int
     mail_server: str
+    mail_from_name: str
+    mail_starttls: bool
+    mail_ssl_tls: bool
+    mail_use_credentials: bool
+    mail_validate_certs: bool
+
     redis_host: str
     redis_port: int
 
