@@ -1,4 +1,6 @@
 import jwt
+import pickle
+import redis
 
 from typing import Optional
 from datetime import datetime, timedelta
@@ -21,6 +23,8 @@ class Auth:
     SECRET_KEY    = settings.jwt_secret_key
     ALGORITHM     = settings.jwt_algorithm
     TOKEN_TTL     = settings.jwt_token_ttl
+    r = redis.Redis(host=settings.redis_host, port=settings.redis_port, db=0)
+
 
     def verify_password(self, plain_password, hashed_password):
         return self.pwd_context.verify(plain_password, hashed_password)
@@ -69,12 +73,9 @@ class Auth:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate credentials')
 
     async def get_current_user(self, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-        credentials_exception = HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Could not validate credentials",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-
+        credentials_exception = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                                              detail="Could not validate credentials",
+                                              headers={"WWW-Authenticate": "Bearer"},)
         try:
             # Decode JWT
             payload = jwt.decode(token, self.SECRET_KEY, algorithms=[self.ALGORITHM])
@@ -86,10 +87,17 @@ class Auth:
                 raise credentials_exception
         except jwt.exceptions.InvalidTokenError as e:
             raise credentials_exception
-
-        user = await get_user_by_email(email, db)
+        # check cache
+        user = self.r.get(f"user:{email}")
         if user is None:
-            raise credentials_exception
+            user = await get_user_by_email(email, db)
+            if user is None:
+                raise credentials_exception
+            # write to chache
+            self.r.set(f"user:{email}", pickle.dumps(user))
+            self.r.expire(f"user:{email}", 900)
+        else:
+            user = pickle.loads(user)
         return user
 
     async def create_email_token(self, data: dict):
