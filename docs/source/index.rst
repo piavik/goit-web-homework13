@@ -11,14 +11,14 @@ Welcome to GoIT FastAPI hw 11-14's documentation!
    :caption: Contents:
 
 REST API main
--------------
+=============
 .. automodule:: main
   :members:
   :undoc-members:
   :show-inheritance:
 
 REST API service Auth
-~~~~~~~~~~~~~~~~~~~~~
+=====================
 .. automodule:: src.auth.auth
   :members:
   :undoc-members:
