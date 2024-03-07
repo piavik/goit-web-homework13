@@ -10,6 +10,7 @@ Welcome to GoIT FastAPI hw 11-14's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+
 REST API main
 =============
 .. automodule:: main
