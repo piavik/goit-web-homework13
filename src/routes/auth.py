@@ -1,3 +1,6 @@
+"""
+FastAPI routes module for user authentication
+"""
 from typing import List
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, HTTPException, Depends, status, Security, BackgroundTasks, Request
@@ -19,6 +22,21 @@ async def signup(body: UserModel,
                  background_tasks: BackgroundTasks, 
                  request: Request, 
                  db: Session = Depends(get_db)):
+    """
+    Sign up a new user.
+
+    Args:
+        body (UserModel): User's attributes
+        background_tasks (BackgroundTasks): FastAPI background_tasks parameter
+        request (Request): The request object
+        db (Session): DB session object. Defaults to Depends(get_db).
+
+    Raises:
+        HTTPException: 409 Conflict. If the user altready exists.
+
+    Returns:
+        UserResponse: User attributes and a simple message
+    """
     # check if user exists
     exist_user = await get_user_by_email(body.email, db)
     if exist_user:
@@ -30,6 +48,21 @@ async def signup(body: UserModel,
 
 @router.post("/login", response_model=TokenModel)
 async def login(body: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    """
+    Existing user log in function.
+
+    Args:
+        body (OAuth2PasswordRequestForm): Dependency injection for FastAPI OAuth2 authentication.
+        db (Session): Dependency injection for DB session. Defaults to Depends(get_db).
+
+    Raises:
+        HTTPException: 401 Unauthorized. The user's email has not been found in users DB.
+        HTTPException: 401 Unauthorized. The user's email has not been confirmed.
+        HTTPException: 401 Unauthorized. The password is invalid.
+
+    Returns:
+        TokenModel: json with access token, refresh token and token type
+    """
     user = await get_user_by_email(body.username, db)
     if user is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email")
@@ -45,8 +78,21 @@ async def login(body: OAuth2PasswordRequestForm = Depends(), db: Session = Depen
 
 @router.get("/refresh", response_model=TokenModel)
 async def refresh_token(credentials: HTTPAuthorizationCredentials = Security(security), db: Session = Depends(get_db)):
+    """
+    Refresh access token if expired.
+
+    Args:
+        credentials (HTTPAuthorizationCredentials): Dependency injection for user authentication. Defaults to Security(security).
+        db (Session): Dependency injection for DB session. Defaults to Depends(get_db).
+
+    Raises:
+        HTTPException: [description]
+
+    Returns:
+        TokenModel: json with access token, refresh token and token type
+    """
     token = credentials.credentials
-    email = await auth_service.decode_refresh_token(token)
+    email = await auth_service.get_email_from_refresh_token(token)
     user = await get_user_by_email(email, db)
     if user.refresh_token != token:
         await update_token(user, None, db)
@@ -59,6 +105,19 @@ async def refresh_token(credentials: HTTPAuthorizationCredentials = Security(sec
 
 @router.get("/confirm_email/{token}")
 async def confirm_email(token: str, db: Session = Depends(get_db)) -> dict:
+    """
+    Endpoint for email confirmation
+
+    Args:
+        token (str): email token that was sent to the user via email
+        db (Session): Dependency injection for DB session. Defaults to Depends(get_db).
+
+    Raises:
+        HTTPException: 400 BadRequest. Token does not correspond to the user's email.
+
+    Returns:
+        dict: json message
+    """
     email = await auth_service.get_email_from_token(token)
     user = await get_user_by_email(email, db)
     if user is None:
@@ -72,7 +131,19 @@ async def confirm_email(token: str, db: Session = Depends(get_db)) -> dict:
 async def request_email(body: RequestEmail, 
                         background_tasks: BackgroundTasks, 
                         request: Request, 
-                        db: Session = Depends(get_db)):
+                        db: Session = Depends(get_db)) -> dict:
+    """
+    Create email with user attributes and send via background_tasks
+
+    Args:
+        body (RequestEmail): request email attributes
+        background_tasks (BackgroundTasks): FastAPI background_tasks
+        request (Request): Request object
+        db (Session): Dependency injection for DB session. Defaults to Depends(get_db).
+
+    Returns:
+        dict: json message
+    """
     user = await get_user_by_email(body.email, db)
     if user.confirmed:
         return {"message": "Your email is already confirmed"}

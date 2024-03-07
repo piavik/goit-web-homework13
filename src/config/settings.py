@@ -8,6 +8,12 @@ load_dotenv()
 
 
 class Settings(BaseSettings):
+    """
+    Class for storing application settings obtained from envvars
+
+    Args:
+        BaseSettings (BaseSettings): Parent class
+    """
     sqlalchemy_database_url: str
     jwt_secret_key: str
     jwt_algorithm: str

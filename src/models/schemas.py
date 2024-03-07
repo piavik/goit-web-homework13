@@ -5,6 +5,12 @@ from pydantic import BaseModel, Field, EmailStr
 
 
 class ContactModel(BaseModel):
+    """
+    Contact Model schema for pydantic validation
+
+    Args:
+        BaseModel: Inherited from BaseModel
+    """
     first_name: str = Field(max_length=50,  description="First name")
     last_name:  str = Field(max_length=50,  description="Last name")
     email:      EmailStr 
@@ -15,6 +21,12 @@ class ContactModel(BaseModel):
 
 
 class ContactResponse(ContactModel):
+    """
+    Contact Response schema for pydantic validation
+
+    Args:
+        ContactModel: Inherited from ContactModel
+    """
     id:         int
     first_name: str
     last_name:  str
@@ -28,12 +40,24 @@ class ContactResponse(ContactModel):
 
 
 class UserModel(BaseModel):
+    """
+    User Model schema for pydantic validation
+
+    Args:
+        BaseModel: Inherited from BaseModel
+    """
     username: str = Field(min_length=5, max_length=16)
     email:    EmailStr
     password: str = Field(min_length=6, max_length=20)
 
 
 class UserDb(BaseModel):
+    """
+    User DB object schema for pydantic validation
+
+    Args:
+        BaseModel: Inherited from BaseModel
+    """
     id:         int
     username:   str
     email:      str
@@ -45,19 +69,34 @@ class UserDb(BaseModel):
 
 
 class UserResponse(BaseModel):
+    """
+    User Responce schema for pydantic validation
+
+    Args:
+        BaseModel: Inherited from BaseModel
+    """
     user:   UserDb
     detail: str = "User successfully created"
 
 
 class TokenModel(BaseModel):
+    """
+    Token model schema for pydantic validation
+
+    Args:
+        BaseModel: Inherited from BaseModel
+    """
     access_token:   str
     refresh_token:  str
     token_type:     str = "bearer"
 
 
-class EmailSchema(BaseModel):
-    email: EmailStr
-
 class RequestEmail(BaseModel):
+    """
+    Email schema for pydantic validation
+
+    Args:
+        BaseModel: Inherited from BaseModel
+    """
     email: EmailStr
     

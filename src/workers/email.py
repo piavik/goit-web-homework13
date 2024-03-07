@@ -5,7 +5,6 @@ from pydantic import EmailStr
 from typing import List
 
 from src.config.settings import settings
-from src.models.schemas import EmailSchema
 from src.auth.auth import auth_service
 
 conf = ConnectionConfig(
@@ -22,7 +21,15 @@ conf = ConnectionConfig(
     TEMPLATE_FOLDER = Path(__file__).parent / 'templates',
 )
 
-async def send_email(email: EmailStr, username: str, host: str):
+async def send_email(email: EmailStr, username: str, host: str) -> None:
+    """
+    Send email to the user.
+
+    Args:
+        email (EmailStr): User email.
+        username (str): User name.
+        host (str): Hostname for the URL that will be used in email for confirmation. (The on that FastAPI app is running on)
+    """
     try:
         token_verification = await auth_service.create_email_token({"sub": email})
         message = MessageSchema(

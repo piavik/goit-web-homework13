@@ -8,6 +8,12 @@ Base = declarative_base()
 
 
 class Contact(Base):
+    """
+    Class for Contact object that will be used by sqlalchemy 
+
+    Args:
+        Base (Base): Parent class
+    """
     __tablename__ = "contacts"
     id            = Column(Integer, primary_key=True)
     first_name    = Column('name', String(50), nullable=False)
@@ -20,6 +26,12 @@ class Contact(Base):
     user          = relationship('User', backref='contacts')
 
 class User(Base):
+    """
+    Class for User object that will be used by sqlalchemy 
+
+    Args:
+        Base (Base): Parent class
+    """
     __tablename__   = "users"
     id              = Column(Integer, primary_key=True)
     username        = Column('username', String(50), nullable=False)

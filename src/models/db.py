@@ -1,3 +1,7 @@
+"""
+Creates database connection Session object
+"""
+
 import psycopg2
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -12,6 +16,12 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Dependency
 def get_db():
+    """
+    Get database session object
+
+    Yields:
+        Session: DB session
+    """
     db = SessionLocal()
     try:
         yield db

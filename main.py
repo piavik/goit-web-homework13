@@ -12,6 +12,11 @@ from src.config.settings import settings
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    '''
+    Rate limit for FastAPI. New scheme instead of deprecated "on_event" 
+    : param app : FastAPI application name
+    : type app : FastAPI
+    '''
     r = await redis.Redis(host=settings.redis_host, port=settings.redis_port, db=0, encoding="utf-8", decode_responses=True)
     await FastAPILimiter.init(r)
     yield
@@ -43,6 +48,9 @@ app.add_middleware(
 
 @app.get("/")
 def read_root() -> dict:
+    '''
+    Dummy URL for request without path and parameters
+    '''
     return {"message": "GoIT homework #11-13 - REST API via FastAPI"}
 
 
