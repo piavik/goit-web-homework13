@@ -9,7 +9,7 @@ from fastapi_limiter.depends import RateLimiter
 
 from src.models.db import get_db
 from src.auth.auth import auth_service
-from src.models.schemas import UserModel, UserResponse, TokenModel, RequestEmail, ResetPasswordEmail
+from src.models.schemas import UserModel, UserResponse, TokenModel, RequestEmail
 from src.workers.users import get_user_by_email, create_user, update_token, confirmed_email
 from src.workers.email import send_email
 
@@ -151,51 +151,3 @@ async def request_email(body: RequestEmail,
         background_tasks.add_task(send_email, user.email, user.username, request.base_url)
     return {"message": "Check your email for confirmation."}
 
-@router.post("/reset_password")
-async def reset_password(body: ResetPasswordEmail, 
-                        background_tasks: BackgroundTasks, 
-                        request: Request, 
-                        db: Session = Depends(get_db)) -> dict:
-    """
-    Create email with user attributes and send via background_tasks to reset user's password
-
-    Args:
-        body (RequestEmail): request email attributes
-        background_tasks (BackgroundTasks): FastAPI background_tasks
-        request (Request): Request object
-        db (Session): Dependency injection for DB session. Defaults to Depends(get_db).
-
-    Returns:
-        dict: json message
-    """
-    
-    user = await get_user_by_email(body.email, db)
-    if user.confirmed:
-        return {"message": "Your email is already confirmed"}
-    if user:
-        background_tasks.add_task(send_email, user.email, user.username, request.base_url)
-    return {"message": "Check your email for confirmation."}
-
-@router.get("/reset_password/{token}")
-async def reset_password_confirm(token: str, db: Session = Depends(get_db)) -> dict:
-    """
-    Endpoint for resetting user's password
-
-    Args:
-        token (str): email token that was sent to the user via email
-        db (Session): Dependency injection for DB session. Defaults to Depends(get_db).
-
-    Raises:
-        HTTPException: 400 BadRequest. Token does not correspond to the user's email.
-
-    Returns:
-        dict: json message
-    """
-    email = await auth_service.get_email_from_token(token)
-    user = await get_user_by_email(email, db)
-    if user is None:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Verification error")
-    if user.confirmed:
-        return {"message": "Your email is already confirmed"}
-    await confirmed_email(email, db)
-    return {"message": "Email verified"}
