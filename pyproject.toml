@@ -27,6 +27,7 @@ cloudinary = "^1.39.0"
 Faker = "^24.0.0"
 requests = "^2.31.0"
 sphinx = "^7.2.6"
+pytest = "^8.1.1"
 
 [build-system]
 requires = ["poetry-core"]
