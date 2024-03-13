@@ -8,9 +8,9 @@ from fastapi.security import OAuth2PasswordRequestForm, HTTPBearer, HTTPAuthoriz
 from fastapi_limiter.depends import RateLimiter
 
 from src.models.db import get_db
-from src.models.schemas import UserModel, UserResponse, TokenModel, RequestEmail
-from src.auth.user import get_user_by_email, create_user, update_token, confirmed_email
 from src.auth.auth import auth_service
+from src.models.schemas import UserModel, UserResponse, TokenModel, RequestEmail
+from src.workers.users import get_user_by_email, create_user, update_token, confirmed_email
 from src.workers.email import send_email
 
 
@@ -150,3 +150,4 @@ async def request_email(body: RequestEmail,
     if user:
         background_tasks.add_task(send_email, user.email, user.username, request.base_url)
     return {"message": "Check your email for confirmation."}
+

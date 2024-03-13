@@ -4,7 +4,6 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 from libgravatar import Gravatar
 
-# from src.models.db import get_db
 from src.models.models import User
 from src.models.schemas import UserModel
 

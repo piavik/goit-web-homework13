@@ -14,7 +14,7 @@ from src.config.settings import settings
 from src.models.db import get_db
 from src.models.models import User
 from src.models.schemas import UserModel
-from src.auth.user import get_user_by_email
+from src.workers.users import get_user_by_email
 
 
 class Auth:
