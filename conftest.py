@@ -1,12 +1,12 @@
 import pytest
 
-import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, Session
 
 from main import app
 from src.models.models import Base
+from src.models.schemas import UserModel
 from src.models.db import get_db
 
 
@@ -19,7 +19,7 @@ TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engin
 
 
 @pytest.fixture(scope="module")
-def session():
+def session() -> Session:
     # Create the database for tests
 
     Base.metadata.drop_all(bind=engine)
@@ -32,7 +32,7 @@ def session():
         db.close()
 
 @pytest.fixture(scope="module")
-def client(session):
+def client(session: Session) -> TestClient:
     # Dependency override
 
     def override_get_db():
@@ -47,7 +47,7 @@ def client(session):
 
 
 @pytest.fixture(scope="module")
-def user():
+def user() -> UserModel:
     return {"username": "buka", 
             "email": "buka@example.com", 
             "password": "123456789"}
