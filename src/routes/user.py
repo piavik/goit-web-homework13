@@ -6,8 +6,8 @@ import cloudinary.uploader
 from src.models.db import get_db
 from src.models.models import User
 from src.models.schemas import UserDb, UserModel
-from src.workers.users import update_avatar
-from src.auth.auth import auth_service
+from src.services.users import update_avatar
+from src.services.auth import auth_service
 from src.config.settings import settings
 
 router = APIRouter(prefix="", tags=["users"])

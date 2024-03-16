@@ -5,7 +5,7 @@ from pydantic import EmailStr
 from typing import List
 
 from src.config.settings import settings
-from src.auth.auth import auth_service
+from src.services.auth import auth_service
 
 conf = ConnectionConfig(
     MAIL_USERNAME   = settings.mail_username,
