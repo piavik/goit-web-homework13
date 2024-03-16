@@ -7,8 +7,8 @@ from sqlalchemy.orm import Session
 from src.models.db import get_db
 from src.models.models import Contact
 from src.models.schemas import ContactModel, ContactResponse,UserModel
-from src.workers import contacts
-from src.auth.auth import auth_service
+from src.services import contacts
+from src.services.auth import auth_service
 
 
 router = APIRouter(prefix='/contacts', dependencies=[Depends(RateLimiter(times=2, seconds=5))])
@@ -25,13 +25,13 @@ async def read_contacts(skip: int = 0,
     Args:
         skip (int): Number of contacts from start to be skipped. Defaults to 0.
         limit (int): Number of contacts to be returned. Defaults to 100.
-        db (Session): Dependency injection for DB session. Defaults to Depends(get_db).
+        db (Session):git status Dependency injection for DB session. Defaults to Depends(get_db).
 
     Returns:
         List[ContactResponse]: list of contacts
     """
-    contacts = await contacts.get_contacts(skip, limit, db)
-    return contacts
+    list_of_contacts = await contacts.get_contacts(skip, limit, db)
+    return list_of_contacts
 
 @router.get("/query/birtdays", response_model=List[ContactResponse])
 async def find_contacts_with_birthdays( days: int = 7, 

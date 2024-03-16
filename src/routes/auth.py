@@ -8,10 +8,10 @@ from fastapi.security import OAuth2PasswordRequestForm, HTTPBearer, HTTPAuthoriz
 from fastapi_limiter.depends import RateLimiter
 
 from src.models.db import get_db
-from src.auth.auth import auth_service
+from src.services.auth import auth_service
 from src.models.schemas import UserModel, UserResponse, TokenModel, RequestEmail
-from src.workers.users import get_user_by_email, create_user, update_token, confirmed_email
-from src.workers.email import send_email
+from src.services.users import get_user_by_email, create_user, update_token, confirmed_email
+from src.services.email import send_email
 
 
 router   = APIRouter(prefix='', tags=["auth"], dependencies=[Depends(RateLimiter(times=2, seconds=5))])
