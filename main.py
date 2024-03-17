@@ -4,7 +4,6 @@ import redis.asyncio as redis
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi_limiter import FastAPILimiter
-from fastapi_limiter.depends import RateLimiter
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.routes import contacts, auth, user

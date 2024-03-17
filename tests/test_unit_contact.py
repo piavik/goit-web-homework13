@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 from sqlalchemy.orm import Session
 
 
-from src.auth.auth import auth_service
+from src.services.auth import auth_service
 from src.models.models import User
 
 

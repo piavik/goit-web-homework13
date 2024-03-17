@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 from sqlalchemy.orm import Session
 
 
-from src.auth.auth import auth_service
+from src.services.auth import auth_service
 from src.models.models import User
 
 class TestAuth(unittest.IsolatedAsyncioTestCase):
@@ -21,7 +21,7 @@ class TestAuth(unittest.IsolatedAsyncioTestCase):
     async def test_refresh(self):
         ...
 
-    async def test_confirm_email(self):
+    async def test_confirmed_email(self):
         ...
 
     async def test_request_email(self):
