@@ -1,10 +1,6 @@
 import unittest
 from unittest.mock import MagicMock
-
-from datetime import datetime, timedelta
-from fastapi import Depends
 from sqlalchemy.orm import Session
-from libgravatar import Gravatar
 
 from src.models.models import User
 from src.models.schemas import UserModel
@@ -15,7 +11,7 @@ class TestUser(unittest.IsolatedAsyncioTestCase):
     def setUp(self):
         self.session = MagicMock(spec=Session)
         self.user = User(id=1)
-        self.refresh_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJwaWF2aWsrMUBnbWFpbC5jb20iLCJpYXQiOjE3MTA2MDAzNDQsImV4cCI6MTcxMTIwNTE0NCwic2NvcGUiOiJyZWZyZXNoX3Rva2VuIn0.crT5k963wTWuB70jDDsMS5PLJsJL4csxPMeC5aGJnb8"
+        self.refresh_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJleGFtcGxlQGV4YW1wbGUuY29tIiwiaWF0IjoxNzEwNjQwNTg4LCJleHAiOjE3MTEyNDUzODgsInNjb3BlIjoicmVmcmVzaF90b2tlbiJ9.DA4Zt7mGHhvQUwLShMQyz4l-Ai9cGuAaqPOTsVP3Yv8"
         self.url = "https://test.com"
         self.email = "example@example.com"
         self.body = UserModel(
