@@ -23,6 +23,7 @@ redis = "^5.0.2"
 fastapi-limiter = "^0.1.6"
 libgravatar = "^1.0.4"
 cloudinary = "^1.39.0"
+uvicorn = "^0.28.0"
 
 [tool.poetry.group.dev.dependencies]
 Faker = "^24.0.0"

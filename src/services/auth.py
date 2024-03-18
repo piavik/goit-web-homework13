@@ -104,13 +104,16 @@ class Auth:
             str: User's email
         """
         try:
-            payload = jwt.decode(refresh_token, self.SECRET_KEY, algorithm=self.ALGORITHM)
+            payload = jwt.decode(refresh_token, self.SECRET_KEY, algorithms=[self.ALGORITHM])
             if payload['scope'] == 'refresh_token':
                 email = payload['sub']
                 return email
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid scope for token')
+        except jwt.exceptions.ExpiredSignatureError:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Token expired')
         except jwt.exceptions.InvalidTokenError:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate credentials')
+
 
     async def get_current_user(self, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
         """

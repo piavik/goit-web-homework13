@@ -3,6 +3,7 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from unittest.mock import AsyncMock
 
 from main import app
 from src.models.models import Base
@@ -32,23 +33,30 @@ def session():
         db.close()
 
 @pytest.fixture(scope="module")
-def client() -> TestClient:
+def client(session) -> TestClient:
     # Dependency override
 
     def override_get_db():
         try:
             yield session
         finally:
-            session.close()
+            session.close()       # TDOD: fix AttributeError: 'function' object has no attribute 'close' 
 
     app.dependency_overrides[get_db] = override_get_db
 
-    yield TestClient(app)
+    with TestClient(app) as client:
+        yield client
 
 
 @pytest.fixture(scope="module")
 def user():
-    return {"username": "buka", 
+    return {"username": "biakabuka", 
             "email": "buka@example.com", 
             "password": "123456789"}
 
+# @pytest.fixture(scope="module", autouse=True)
+# def patch_fastapi_limiter(monkeypatch):
+#     monkeypatch.setattr("src.services.email.send_email", mock_send_email)
+#     monkeypatch.setattr("fastapi_limiter.FastAPILimiter.redis", AsyncMock())
+#     monkeypatch.setattr("fastapi_limiter.FastAPILimiter.identifier", AsyncMock())
+#     monkeypatch.setattr("fastapi_limiter.FastAPILimiter.http_callback", AsyncMock()) 
